@@ -46,7 +46,7 @@ public class Empleado {
 	}
 	public void setNombre(String nombre) {
 		if(nombre == null || nombre.trim().length() < 2) {
-			throw new EntidadesException("El nombre debe estar rellenado con un mínimo de 2 letras");
+			throw new EntidadesException("El nombre debe de tener al menos 2 letras");
 		}
 		this.nombre = nombre;
 	}
@@ -65,7 +65,7 @@ public class Empleado {
 	}
 	public void setSueldo(BigDecimal sueldo) {
 		if(sueldo == null || sueldo.compareTo(BigDecimal.ZERO) < 0) {
-			throw new EntidadesException("El sueldo debe ser mayor o igual que 0");
+			throw new EntidadesException("El sueldo debe ser un número mayor o igual que 0");
 		}
 		this.sueldo = sueldo;
 	}

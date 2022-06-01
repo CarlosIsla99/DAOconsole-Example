@@ -19,6 +19,7 @@ public class PresentacionConsola {
 
 	public static void main(String[] args) {
 		LOGGER.info("Se ha iniciado el programa");
+		// LOGGER.log(Level.SEVERE, "Esto es un ejemplo en caso de error", new RuntimeException("Aquí iría el error"));
 		int opcion;
 		do {
 			mostrarMenu();
@@ -132,26 +133,59 @@ public class PresentacionConsola {
 	private static void insertar() {
 		Empleado empleado = new Empleado();
 		Scanner sc = new Scanner(System.in);
+		boolean repetir = false;
 		
-		pl("Introduce el NIF: ");
-		String nif = sc.nextLine();
-		empleado.setNif(nif);
+		do {
+			pl("Introduce el NIF: ");
+			try {
+				String nif = sc.nextLine();
+				empleado.setNif(nif);
+				repetir = false;
+			}catch(Exception e) {
+				repetir = true;
+				pl("El NIF introducido debe ser válido");
+			}
+		} while(repetir);
 		
-		pl("Introduce el nombre: ");
-		String nombre = sc.nextLine();
-		empleado.setNombre(nombre);
+		do {
+			pl("Introduce el nombre: ");
+			try {
+				String nombre = sc.nextLine();
+				empleado.setNombre(nombre);
+				repetir = false;
+			}catch(Exception e) {
+				repetir = true;
+				pl("El nombre debe de tener al menos 2 letras");
+			}
+		} while(repetir);
 		
-		pl("Introduce la fecha de nacimiento: yyyy-MM-d");
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
-		LocalDate fechaNacimiento = LocalDate.parse(sc.nextLine(), formatter);
-		empleado.setFechaNacimineto(fechaNacimiento);
+		do {
+			pl("Introduce la fecha de nacimiento: yyyy-MM-d");
+			try {
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
+				LocalDate fechaNacimiento = LocalDate.parse(sc.nextLine(), formatter);
+				empleado.setFechaNacimineto(fechaNacimiento);
+				repetir = false;
+			}catch(Exception e) {
+				repetir = true;
+				pl("La fecha de nacimiento debe estar comprendida entre 1900 y la fecha actual");
+			}
+		} while(repetir);
 		
-		pl("Introduce el sueldo: ");
-		BigDecimal sueldo = sc.nextBigDecimal();
-		empleado.setSueldo(sueldo);
-		
+		do {
+			pl("Introduce el sueldo: ");
+			try {
+				BigDecimal sueldo = new BigDecimal(sc.nextLine());
+				empleado.setSueldo(sueldo);
+				repetir = false;
+			}catch(Exception e) {
+				repetir = true;
+				pl("El sueldo debe ser mayor o igual que 0");
+			}
+		} while(repetir);
+
 		DAO.intsertar(empleado);
-		pl("Nuevo empleado insertado correctamente: ");
+		pl("El nuevo empleado ha sido insertado correctamente: ");
 		mostrarLinea(empleado);
 	}
 
@@ -162,16 +196,14 @@ public class PresentacionConsola {
 		try {
 				Long selectedId = Long.parseLong(sc.nextLine());
 				if(DAO.obtenerPorId(selectedId) == null) {
-					pl("No existe un usuario con ese ID");
+					pl("No existe esa ID");
 					mostrarSeleccionado();
 				} else {
 					pl(DAO.obtenerPorId(selectedId));
 				}
-			}
-		catch(Exception e) {
-				// LOGGER.log(Level.SEVERE, "Error al introducir ID en búsqueda empleado", e);
+			} catch(Exception e) {
+				LOGGER.log(Level.SEVERE, "Error al introducir ID en búsqueda empleado", e);
 				pl("Formato de ID incorrecto");
-				pl("Intentelo de nuevo...");
 				mostrarSeleccionado();
 			}
 		
