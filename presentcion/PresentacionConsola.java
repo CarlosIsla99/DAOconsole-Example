@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import entidades.Empleado;
 import accesodatos.DaoEmpleado;
@@ -11,9 +13,12 @@ import accesodatos.DaoEmpleadoMemoria;
 import static bibliotecas.Consola.*;
 
 public class PresentacionConsola {
+	
 	private static final DaoEmpleado DAO = DaoEmpleadoMemoria.getInstancia();
+	private static final Logger LOGGER = Logger.getLogger(PresentacionConsola.class.getName());
 
 	public static void main(String[] args) {
+		LOGGER.info("Se ha iniciado el programa");
 		int opcion;
 		do {
 			mostrarMenu();
@@ -53,6 +58,7 @@ public class PresentacionConsola {
 			borrar();
 			break;
 		case 0:
+			LOGGER.info("Se ha finalizado el programa");
 			pl("0. ¡Gracias por usar la apliación! :)");
 			break;
 		default:
@@ -145,7 +151,8 @@ public class PresentacionConsola {
 		empleado.setSueldo(sueldo);
 		
 		DAO.intsertar(empleado);
-		pl("Nuevo empleado insertado (ID: " + empleado.getId() +")");
+		pl("Nuevo empleado insertado correctamente: ");
+		mostrarLinea(empleado);
 	}
 
 	private static void mostrarSeleccionado() {
@@ -162,6 +169,7 @@ public class PresentacionConsola {
 				}
 			}
 		catch(Exception e) {
+				// LOGGER.log(Level.SEVERE, "Error al introducir ID en búsqueda empleado", e);
 				pl("Formato de ID incorrecto");
 				pl("Intentelo de nuevo...");
 				mostrarSeleccionado();

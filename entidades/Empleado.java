@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import bibliotecas.Validaciones;
+
 public class Empleado {
 
 	private Long id;
@@ -34,24 +36,37 @@ public class Empleado {
 		return nif;
 	}
 	public void setNif(String nif) {
+		if (!Validaciones.validarNif(nif)) {
+			throw new EntidadesException("El NIF introducido debe ser válido");
+		}
 		this.nif = nif;
 	}
 	public String getNombre() {
 		return nombre;
 	}
 	public void setNombre(String nombre) {
+		if(nombre == null || nombre.trim().length() < 2) {
+			throw new EntidadesException("El nombre debe estar rellenado con un mínimo de 2 letras");
+		}
 		this.nombre = nombre;
 	}
 	public LocalDate getFechaNacimineto() {
 		return fechaNacimineto;
 	}
 	public void setFechaNacimineto(LocalDate fechaNacimineto) {
+		if(fechaNacimineto == null || fechaNacimineto.isAfter(LocalDate.now().minusYears(18)) 
+				|| fechaNacimineto.isBefore(LocalDate.of(1900, 1, 1))) {
+			throw new EntidadesException("La fecha de nacimiento debe estar comprendida entre 1900 y la fecha actual");
+		}
 		this.fechaNacimineto = fechaNacimineto;
 	}
 	public BigDecimal getSueldo() {
 		return sueldo;
 	}
 	public void setSueldo(BigDecimal sueldo) {
+		if(sueldo == null || sueldo.compareTo(BigDecimal.ZERO) < 0) {
+			throw new EntidadesException("El sueldo debe ser mayor o igual que 0");
+		}
 		this.sueldo = sueldo;
 	}
 
@@ -75,7 +90,7 @@ public class Empleado {
 
 	@Override
 	public String toString() {
-		return "EMPLEADO ID:" + id + " / NIF:" + nif + " / Nombre:" + nombre + " / Fecha Nacimiento:" + fechaNacimineto
+		return "EMPLEADO -> ID:" + id + " / NIF:" + nif + " / Nombre:" + nombre + " / Fecha Nacimiento:" + fechaNacimineto
 				+ " / Sueldo:" + sueldo + "€";
 	}
 	
