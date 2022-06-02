@@ -1,10 +1,6 @@
 package bibliotecas;
 
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import presentcion.PresentacionConsola;
 
 public class Consola {
 	private static final Scanner sc = new Scanner(System.in);

@@ -60,7 +60,7 @@ public class PresentacionConsola {
 			break;
 		case 0:
 			LOGGER.info("Se ha finalizado el programa");
-			pl("0. ¡Gracias por usar la apliación! :)");
+			pl("0. ¡Gracias por usar la apliación!");
 			break;
 		default:
 			errorPl("Por favor, elija una de las opciones existentes");
@@ -69,65 +69,150 @@ public class PresentacionConsola {
 
 	private static void borrar() {
 		Scanner sc = new Scanner(System.in);
-		pl("Introduce la ID del empleado que desee borrar: ");
-		Long selectedId = Long.parseLong(sc.nextLine());
+		boolean encontrado = false;
 		
-		DAO.borrar(selectedId);	
-		pl("Se ha eliminado el empleado con ID: " + selectedId);
+		pl("Introduce la ID del empleado que desee borrar: ");
+		Long selectedId = null;
+		try {
+			selectedId = Long.parseLong(sc.nextLine());
+		} catch(Exception e) {};
+		
+		for(Empleado e: DAO.obtenerTodos()) {
+			if(e.getId() == selectedId) {
+				DAO.borrar(e.getId());
+				pl("Se ha eliminado el empleado con ID: " + e.getId());
+				encontrado = true;
+				break;
+			}
+		}
+		
+		if(encontrado == false) {
+			pl("No se ha encontrado un empleado con ID: "+selectedId);
+		}
+		
 	}
 
 	private static void modificar() {
 		Empleado empleado = new Empleado();
 		Scanner sc = new Scanner(System.in);
 		
-		pl("Introduce la ID del empleado que quiera modificar: ");
-		Long selectedId = Long.parseLong(sc.nextLine());
-		empleado.setId(selectedId);
+		boolean encontrado = false;
+		Long selectedId = 0L;
 		
-		pl("¿Qué campo le gustaría modificar?");
-		pl("1. NIF");
-		pl("2. Nombre");
-		pl("3. Fecha de Nacimiento");
-		pl("4. Sueldo");
-		pl("0. Cancelar");
-		int opcion = Integer.parseInt(sc.nextLine());
+		do {
+			pl("Introduce la ID del empleado que quiera modificar: ");
+			
+			try {
+				selectedId = Long.parseLong(sc.nextLine());
+			}catch(Exception e) {};
+			
+			for(Empleado e: DAO.obtenerTodos()) {
+				if(e.getId() == selectedId) {
+					empleado.setId(selectedId);
+					encontrado = true;
+				}
+			}
+			
+			if(encontrado == false) {
+				pl("No se ha encontrado un empleado con ID: "+selectedId);
+			}
+		} while(encontrado == false);
+		
+		boolean repetir =  false;
+		int opcion = 0;
+		
+		do {
+			pl("¿Qué campo le gustaría modificar?");
+			pl("1. NIF");
+			pl("2. Nombre");
+			pl("3. Fecha de Nacimiento");
+			pl("4. Sueldo");
+			pl("0. Cancelar");
+
+			try {
+				opcion = Integer.parseInt(sc.nextLine());
+				repetir = false;
+			} catch(Exception e) {
+				pl("Opción no válida");
+				repetir = true;
+			}
+		} while(repetir);
 		
 		empleado.setNif(DAO.obtenerPorId(selectedId).getNif());
 		empleado.setNombre(DAO.obtenerPorId(selectedId).getNombre());
 		empleado.setFechaNacimineto(DAO.obtenerPorId(selectedId).getFechaNacimineto());
 		empleado.setSueldo(DAO.obtenerPorId(selectedId).getSueldo());
+		
+		boolean modificado = true;
 			
 		switch(opcion) {
 		case 1:
-			pl("Introduce el NIF: ");
-			String nif = sc.nextLine();
-			empleado.setNif(nif);
+			do {
+				pl("Introduce el NIF: ");
+				try {
+					String nif = sc.nextLine();
+					empleado.setNif(nif);
+					repetir = false;
+				}catch(Exception e) {
+					repetir = true;
+					pl("El NIF introducido debe ser válido");
+				}
+			} while(repetir);
 			break;
 		case 2:
-			pl("Introduce el nombre: ");
-			String nombre = sc.nextLine();
-			empleado.setNombre(nombre);
+			do {
+				pl("Introduce el nombre: ");
+				try {
+					String nombre = sc.nextLine();
+					empleado.setNombre(nombre);
+					repetir = false;	
+				}catch(Exception e) {
+					repetir = true;
+					pl("El nombre debe de tener al menos 2 letras y no se admiten números");
+				}
+			} while(repetir);
 			break;
 		case 3:
-			pl("Introduce la fecha de nacimiento: yyyy-MM-d");
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
-			LocalDate fechaNacimiento = LocalDate.parse(sc.nextLine(), formatter);
-			empleado.setFechaNacimineto(fechaNacimiento);
+			do {
+				pl("Introduce la fecha de nacimiento: AAAA-MM-D");
+				try {
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
+					LocalDate fechaNacimiento = LocalDate.parse(sc.nextLine(), formatter);
+					empleado.setFechaNacimineto(fechaNacimiento);
+					repetir = false;
+				}catch(Exception e) {
+					repetir = true;
+					pl("La fecha de nacimiento debe estar comprendida entre 1900 y la fecha actual");
+				}
+			} while(repetir);
 			break;
 		case 4:
-			pl("Introduce el sueldo: ");
-			BigDecimal sueldo = sc.nextBigDecimal();
-			empleado.setSueldo(sueldo);
+			do {
+				pl("Introduce el sueldo: ");
+				try {
+					BigDecimal sueldo = new BigDecimal(sc.nextLine());
+					empleado.setSueldo(sueldo);
+					repetir = false;
+				}catch(Exception e) {
+					repetir = true;
+					pl("El sueldo debe ser mayor o igual que 0");
+				}
+			} while(repetir);
 			break;
 		case 0:
 			pl("Se ha cancelado la modificación");
+			modificado = false;
 			break;
 		default:
-			errorPl("Por favor, elija una de las opciones existentes");
+			errorPl("Opción no válida");
+			modificado = false;
 		}
 		
-		DAO.modificar(empleado);
-		pl("Se ha modificado el empleado con ID: " + selectedId);
+		if(modificado) {
+			DAO.modificar(empleado);
+			pl("Se ha modificado el empleado con ID: " + empleado.getId());
+		}
+		
 	}
 
 	private static void insertar() {
@@ -152,15 +237,15 @@ public class PresentacionConsola {
 			try {
 				String nombre = sc.nextLine();
 				empleado.setNombre(nombre);
-				repetir = false;
+				repetir = false;	
 			}catch(Exception e) {
 				repetir = true;
-				pl("El nombre debe de tener al menos 2 letras");
+				pl("El nombre debe de tener al menos 2 letras y no se admiten números");
 			}
 		} while(repetir);
 		
 		do {
-			pl("Introduce la fecha de nacimiento: yyyy-MM-d");
+			pl("Introduce la fecha de nacimiento: AAAA-MM-D");
 			try {
 				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
 				LocalDate fechaNacimiento = LocalDate.parse(sc.nextLine(), formatter);
@@ -202,7 +287,7 @@ public class PresentacionConsola {
 					pl(DAO.obtenerPorId(selectedId));
 				}
 			} catch(Exception e) {
-				LOGGER.log(Level.SEVERE, "Error al introducir ID en búsqueda empleado", e);
+				// LOGGER.log(Level.SEVERE, "Error al introducir ID en búsqueda empleado", e);
 				pl("Formato de ID incorrecto");
 				mostrarSeleccionado();
 			}

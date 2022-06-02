@@ -45,8 +45,8 @@ public class Empleado {
 		return nombre;
 	}
 	public void setNombre(String nombre) {
-		if(nombre == null || nombre.trim().length() < 2) {
-			throw new EntidadesException("El nombre debe de tener al menos 2 letras");
+		if(nombre == null || nombre.trim().length() < 2 || nombre.matches(".*\\d.*")) {
+			throw new EntidadesException("El nombre debe de tener al menos 2 letras y no se admiten números");
 		}
 		this.nombre = nombre;
 	}
