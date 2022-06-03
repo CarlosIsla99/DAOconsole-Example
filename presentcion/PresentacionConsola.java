@@ -44,7 +44,8 @@ public class PresentacionConsola {
 	private static void procesarOpcion(int opcion) {
 		switch(opcion) {
 		case 1:
-			mostrarTodos();
+			// mostrarTodos();
+			mostrarTodosTabla();
 			break;
 		case 2:
 			mostrarSeleccionado();
@@ -104,6 +105,7 @@ public class PresentacionConsola {
 			
 			try {
 				selectedId = Long.parseLong(sc.nextLine());
+				pl(DAO.obtenerPorId(selectedId));
 			}catch(Exception e) {};
 			
 			for(Empleado e: DAO.obtenerTodos()) {
@@ -294,10 +296,21 @@ public class PresentacionConsola {
 		
 	}
 
-	private static void mostrarTodos() {
+	/* private static void mostrarTodos() {
 		for(Empleado e: DAO.obtenerTodos()) {
 			mostrarLinea(e);
 		}
+	} */
+	
+	private static void mostrarTodosTabla() {
+		System.out.println("-------------------------------------------------------------");
+		System.out.printf("%5S %9S %11S %18S %8S %n", "ID","NIF","Nombre","Fecha Nacimiento","Sueldo");
+		System.out.println("-------------------------------------------------------------");
+
+		for(Empleado e: DAO.obtenerTodos()) {
+			System.out.format("%5d %12s %8s %15s %11s %n", e.getId(),e.getNif(),e.getNombre(),e.getFechaNacimineto(),e.getSueldo()+"€");
+		}
+		System.out.println("-------------------------------------------------------------");
 	}
 
 	private static void mostrarLinea(Empleado e) {

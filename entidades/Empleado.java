@@ -90,8 +90,8 @@ public class Empleado {
 
 	@Override
 	public String toString() {
-		return "EMPLEADO -> ID:" + id + " / NIF:" + nif + " / Nombre:" + nombre + " / Fecha Nacimiento:" + fechaNacimineto
-				+ " / Sueldo:" + sueldo + "€";
+		return "////// EMPLEADO ID: " + id + " //////" + "\nNIF: " + nif + "\nNombre: " + nombre 
+				+ "\nFecha Nacimiento: " + fechaNacimineto + "\nSueldo: " + sueldo + "€ \n";
 	}
 	
 }
