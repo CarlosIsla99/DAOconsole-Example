@@ -16,12 +16,13 @@ public class Empleado {
 
 	public Empleado(Long id, String nif, String nombre, LocalDate fechaNacimineto, BigDecimal sueldo) {
 		super();
-		this.id = id;
-		this.nif = nif;
-		this.nombre = nombre;
-		this.fechaNacimineto = fechaNacimineto;
-		this.sueldo = sueldo;
-	}	
+		setId(id);
+		setNif(nif);
+		setNombre(nombre);
+		setFechaNacimineto(fechaNacimineto);
+		setSueldo(sueldo);
+	}
+
 	public Empleado() {
 		super();
 	}
@@ -29,42 +30,54 @@ public class Empleado {
 	public Long getId() {
 		return id;
 	}
+
 	public void setId(Long id) {
+		if(id == null || id < 0) {
+			throw new EntidadesException("La ID debe ser mayor o igual a 0");
+		}
 		this.id = id;
 	}
+
 	public String getNif() {
 		return nif;
 	}
+
 	public void setNif(String nif) {
 		if (!Validaciones.validarNif(nif)) {
 			throw new EntidadesException("El NIF introducido debe ser válido");
 		}
 		this.nif = nif;
 	}
+
 	public String getNombre() {
 		return nombre;
 	}
+
 	public void setNombre(String nombre) {
-		if(nombre == null || nombre.trim().length() < 2 || nombre.matches(".*\\d.*")) {
+		if (nombre == null || nombre.trim().length() < 2 || nombre.matches(".*\\d.*")) {
 			throw new EntidadesException("El nombre debe de tener al menos 2 letras y no se admiten números");
 		}
 		this.nombre = nombre;
 	}
+
 	public LocalDate getFechaNacimineto() {
 		return fechaNacimineto;
 	}
+
 	public void setFechaNacimineto(LocalDate fechaNacimineto) {
-		if(fechaNacimineto == null || fechaNacimineto.isAfter(LocalDate.now().minusYears(18)) 
+		if (fechaNacimineto == null || fechaNacimineto.isAfter(LocalDate.now().minusYears(18))
 				|| fechaNacimineto.isBefore(LocalDate.of(1900, 1, 1))) {
 			throw new EntidadesException("La fecha de nacimiento debe estar comprendida entre 1900 y la fecha actual");
 		}
 		this.fechaNacimineto = fechaNacimineto;
 	}
+
 	public BigDecimal getSueldo() {
 		return sueldo;
 	}
+
 	public void setSueldo(BigDecimal sueldo) {
-		if(sueldo == null || sueldo.compareTo(BigDecimal.ZERO) < 0) {
+		if (sueldo == null || sueldo.compareTo(BigDecimal.ZERO) < 0) {
 			throw new EntidadesException("El sueldo debe ser un número mayor o igual que 0");
 		}
 		this.sueldo = sueldo;
@@ -74,6 +87,7 @@ public class Empleado {
 	public int hashCode() {
 		return Objects.hash(fechaNacimineto, id, nif, nombre, sueldo);
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -90,8 +104,8 @@ public class Empleado {
 
 	@Override
 	public String toString() {
-		return "////// EMPLEADO ID: " + id + " //////" + "\nNIF: " + nif + "\nNombre: " + nombre 
+		return "////// EMPLEADO ID: " + id + " //////" + "\nNIF: " + nif + "\nNombre: " + nombre
 				+ "\nFecha Nacimiento: " + fechaNacimineto + "\nSueldo: " + sueldo + "€ \n";
 	}
-	
+
 }

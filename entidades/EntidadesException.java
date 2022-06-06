@@ -1,7 +1,8 @@
 package entidades;
 
 public class EntidadesException extends RuntimeException {
-
+	
+	// Add generated serial version ID
 	private static final long serialVersionUID = -5779775604794523281L;
 
 	public EntidadesException() {

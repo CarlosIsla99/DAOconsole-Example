@@ -4,19 +4,19 @@ import java.util.Scanner;
 
 public class Consola {
 	private static final Scanner sc = new Scanner(System.in);
-	
+
 	public static void pl(Object o) {
 		System.out.println(o);
 	}
-	
+
 	public static void p(Object o) {
 		System.out.println(o);
 	}
-	
+
 	public static void errorPl(Object o) {
 		System.out.println(o);
 	}
-	
+
 	public static int pedirInt(String mensaje) {
 		p(mensaje + ": ");
 		Integer intRetorno = null;
@@ -25,10 +25,10 @@ public class Consola {
 			try {
 				intRetorno = Integer.parseInt(sc.nextLine());
 				repetir = false;
-			} catch (Exception e ) {
+			} catch (Exception e) {
 				System.out.println(mensaje);
 			}
-		} while(repetir);		
+		} while (repetir);
 		return intRetorno;
 	}
 }
